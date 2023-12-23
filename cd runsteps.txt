@@ -1,0 +1,15 @@
+tkn hub install task git-clone
+kubectl apply -f https://raw.githubusercontent.com/tektoncd/catalog/main/task/git-clone/0.9/git-clone.yaml
+tkn hub install task flake8
+kubectl apply -f tasks.yaml
+kubectl apply -f pipeline.yaml
+kubectl apply -f pvc.yaml
+
+"start pipeline"
+
+tkn pipeline start cd-pipeline \
+    -p repo-url="https://github.com/ibm-developer-skills-network/wtecc-CICD_PracticeCode.git" \
+    -p branch=main \
+    -p build-image=image-registry.openshift-image-registry.svc:5000/$SN_ICR_NAMESPACE/tekton-lab:latest \
+    -w name=pipeline-workspace,claimName=pipelinerun-pvc \
+    --showlog
